@@ -16,37 +16,37 @@ The client has one method of note: <b>execute(cmd, params, callbacks)</b>, where
 For example:
 
 ```javascript
-    var csclient = require('csclient');
-    
-    var options = {
-        apiKey: 'abcd1234',
-        secretKey: 'efgh5678',
-        serverURL: 'http://host:port/client/api?'
-    };
-    
-    var client = new csclient.CloudStackClient(options);
-    
-    client.execute('listVirtualMachines', {}, {
-        success: function (response) {
-            for (var i = 0; i < response.listvirtualmachinesresponse.virtualmachine.length; i++) {
-                var vm = response.listvirtualmachinesresponse.virtualmachine[i];
-                console.log(vm.name + " is in state " + vm.state);
-            }
-        },
-        apiError: function (errorCode, errorMessage) {
-           switch (errorCode) {
-           case 401:
-               console.log('Unauthorized.');
-               break;
-           case 530:
-               console.log('Parameter error: ' + errorMessage);
-               break;
-           default:
-               console.log('API error ' + errorCode + ': ' + errorMessage);
-           }
-        },
-        error: function (err) {
-            console.log('Oops, I did it again. ' + err.message);
+var csclient = require('csclient');
+
+var options = {
+    apiKey: 'abcd1234',
+    secretKey: 'efgh5678',
+    serverURL: 'http://host:port/client/api?'
+};
+
+var client = new csclient.CloudStackClient(options);
+
+client.execute('listVirtualMachines', {}, {
+    success: function (response) {
+        for (var i = 0; i < response.listvirtualmachinesresponse.virtualmachine.length; i++) {
+            var vm = response.listvirtualmachinesresponse.virtualmachine[i];
+            console.log(vm.name + " is in state " + vm.state);
         }
-    });
+    },
+    apiError: function (errorCode, errorMessage) {
+        switch (errorCode) {
+        case 401:
+            console.log('Unauthorized.');
+            break;
+        case 530:
+            console.log('Parameter error: ' + errorMessage);
+            break;
+        default:
+            console.log('API error ' + errorCode + ': ' + errorMessage);
+        }
+    },
+    error: function (err) {
+        console.log('Oops, I did it again. ' + err.message);
+    }
+});
 ```
