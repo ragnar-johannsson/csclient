@@ -11,8 +11,11 @@ Place this repository under the node_modules/ subdir of your project, or your $H
 
 ### Usage
 
-The client has one method of note: <b>execute(cmd, params, callbacks)</b>, where <b><i>cmd</i></b> is a string with the actual API command, <b><i>params</i></b> is a key-value object with optional parameters and <b><i>callbacks</i></b> the object containing the <i>success, apiError</i> and <i>error</i> callbacks. Example:
+The client has one method of note: <b>execute(cmd, params, callbacks)</b>, where <b><i>cmd</i></b> is a string with the actual API command, <b><i>params</i></b> is a key-value object with optional parameters and <b><i>callbacks</i></b> the object containing the <i>success, apiError</i> and <i>error</i> callbacks. 
 
+For example:
+
+```javascript
     var csclient = require('csclient');
     
     var options = {
@@ -46,3 +49,4 @@ The client has one method of note: <b>execute(cmd, params, callbacks)</b>, where
             console.log('Oops, I did it again. ' + err.message);
         }
     });
+```
