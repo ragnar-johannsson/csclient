@@ -16,7 +16,7 @@ The client has one method of note: <b>execute(cmd, params, callbacks)</b>, where
 For example:
 
 ```javascript
-var csclient = require('csclient');
+var CloudStackClient = require('csclient').CloudStackClient;
 
 var options = {
     apiKey: 'abcd1234',
@@ -24,7 +24,7 @@ var options = {
     serverURL: 'http://host:port/client/api?'
 };
 
-var client = new csclient.CloudStackClient(options);
+var client = new CloudStackClient(options);
 
 client.execute('listVirtualMachines', {}, {
     success: function (response) {
