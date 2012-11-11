@@ -27,7 +27,7 @@ var client = new CloudStackClient(options);
 
 client.execute('listVirtualMachines', {}, function (err, response) {
     if (err) {
-        if (err.name === 'APIError') {
+        if (err.name === 'APIError') {
             switch (err.code) {
             case 401:
                 return console.log('Unauthorized.');
