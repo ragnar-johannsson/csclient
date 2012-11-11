@@ -1,0 +1,18 @@
+{
+    "name": "csclient",
+    "version": "0.1.4",
+    "description": "An API client for the CloudStack",
+    "keywords": [ "cloudstack", "api", "client" ],
+    "author": "Ragnar B. Johannsson <ragnar@igo.is>",
+    "devDependencies": {
+        "nodeunit": "*"
+    },
+    "scripts": {
+        "test": "node_modules/.bin/nodeunit test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/ragnar-johannsson/csclient.git"
+    },
+    "main": "./lib/client"
+}
