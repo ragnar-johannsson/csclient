@@ -1,6 +1,6 @@
 var events = require('events');
 var util= require('util');
-var CSClient = require('../lib/client').CloudStackClient
+var CSClient = require('../lib/client');
 
 var listVMsJSONResponse = 
     '{' +

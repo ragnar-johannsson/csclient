@@ -15,7 +15,7 @@ The client has one method of note: <b>execute(cmd, params, callbacks)</b>, where
 For example:
 
 ```javascript
-var CloudStackClient = require('csclient').CloudStackClient;
+var CloudStackClient = require('csclient');
 
 var options = {
     apiKey: 'abcd1234',
