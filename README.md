@@ -1,13 +1,12 @@
 ## CloudStack API client for Node.js
 
 
-### Requirements
-
-The client itself has no dependencies, only stock Node. Tested on 0.8.4. For the unit tests you need nodeunit - npm install nodeunit - and for automatic unit tests you need watchr - gem install watchr.
-
 ### Installation
 
-Place this repository under the node_modules/ subdir of your project, or your $HOME, as a git module, a symlink to an actual repo path or a plain copy/clone.
+```bash
+$ npm install csclient
+```
+
 
 ### Usage
 
@@ -50,3 +49,8 @@ client.execute('listVirtualMachines', {}, {
     }
 });
 ```
+
+
+### License
+
+This is free software released under the Simplified BSD License. See the LICENSE file for further information.
