@@ -10,7 +10,7 @@ $ npm install csclient
 
 ### Usage
 
-The client has one method of note: <b>execute(cmd, params, callbacks)</b>, where <b><i>cmd</i></b> is a string with the actual API command, <b><i>params</i></b> is a key-value object with optional parameters and <b><i>callbacks</i></b> the object containing the <i>success, apiError</i> and <i>error</i> callbacks. 
+The client has one method of note: <b>execute(cmd, params, callback)</b>, where <b><i>cmd</i></b> is a string with the actual API command and <b><i>params</i></b> is a key-value object with optional parameters. 
 
 For example:
 
@@ -25,27 +25,25 @@ var options = {
 
 var client = new CloudStackClient(options);
 
-client.execute('listVirtualMachines', {}, {
-    success: function (response) {
-        for (var i = 0; i < response.listvirtualmachinesresponse.virtualmachine.length; i++) {
-            var vm = response.listvirtualmachinesresponse.virtualmachine[i];
-            console.log(vm.name + " is in state " + vm.state);
+client.execute('listVirtualMachines', {}, function (err, response) {
+    if (err) {
+        if (err.name === 'APIError') {
+            switch (err.code) {
+            case 401:
+                return console.log('Unauthorized.');
+            case 530:
+                return console.log('Parameter error: ' + err.message);
+            default:
+                return console.log('API error ' + err.code + ': ' + err.message);
+            }
+        } else {
+            return console.log('Oops, I did it again. ' + err.message);
         }
-    },
-    apiError: function (errorCode, errorMessage) {
-        switch (errorCode) {
-        case 401:
-            console.log('Unauthorized.');
-            break;
-        case 530:
-            console.log('Parameter error: ' + errorMessage);
-            break;
-        default:
-            console.log('API error ' + errorCode + ': ' + errorMessage);
-        }
-    },
-    error: function (err) {
-        console.log('Oops, I did it again. ' + err.message);
+    }
+
+    for (var i = 0; i < response.listvirtualmachinesresponse.virtualmachine.length; i++) {
+        var vm = response.listvirtualmachinesresponse.virtualmachine[i];
+        console.log(vm.name + " is in state " + vm.state);
     }
 });
 ```

@@ -142,15 +142,13 @@ exports.testData = function(test) {
     };
 
     test.expect(5)
-    client.execute('listVirtualMachines', {}, {
-        success: function (data) {
-            test.ok(data['listvirtualmachinesresponse'] !== undefined, "Invalid response");
-            test.ok(data['listvirtualmachinesresponse']['virtualmachine'] !== undefined, "Invalid response");
-            test.ok(data['listvirtualmachinesresponse']['virtualmachine'].length === 2, "Invalid response");
-            test.ok(data['listvirtualmachinesresponse']['virtualmachine'][0].name === 'i-abcdefgh', "Invalid response");
-        },
-        apiError: function (code, msg) { test.ok(false, 'Callback should not be executed'); },
-        error: function (err) { test.ok(false, 'Callback should not be executed'); }
+    client.execute('listVirtualMachines', {}, function (err, data) {
+        if (err) return test.ok(false, 'Should not be called');
+
+        test.ok(data['listvirtualmachinesresponse'] !== undefined, "Invalid response");
+        test.ok(data['listvirtualmachinesresponse']['virtualmachine'] !== undefined, "Invalid response");
+        test.ok(data['listvirtualmachinesresponse']['virtualmachine'].length === 2, "Invalid response");
+        test.ok(data['listvirtualmachinesresponse']['virtualmachine'][0].name === 'i-abcdefgh', "Invalid response");
     });
 
     http.mockResponse.emit('data', listVMsJSONResponse);
@@ -165,13 +163,11 @@ exports.testIncompleteData = function (test) {
     var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
 
     test.expect(2);
-    client.execute('listVirtualMachines', {}, {
-        success: function (data) { test.ok(false, 'Callback should not be executed'); },
-        apiError: function (code, msg) { test.ok(false, 'Callback should not be executed'); },
-        error: function (err) { 
-            test.ok(err.name == 'SyntaxError', 'Incorrect error'); 
-            test.ok(err.message == 'Unexpected end of input', 'Incorrect error'); 
-        }
+    client.execute('listVirtualMachines', {}, function (err) {
+        if (!err) return test.ok(false, 'No error raised');
+
+        test.ok(err.name == 'SyntaxError', 'Incorrect error');
+        test.ok(err.message == 'Unexpected end of input', 'Incorrect error');
     });
 
     http.mockResponse.emit('data', listVMsJSONResponse.slice(0, listVMsJSONResponse.length/2));
@@ -184,10 +180,12 @@ exports.testApiErrors = function (test) {
     var http = getMockHttp(401);
     var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
 
-    client.execute('listVirtualMachines', {}, {
-        success: function (data) { test.ok(false, 'Callback should not be executed'); },
-        apiError: function (code, msg) { test.ok(code == 401, 'Incorrect error code'); },
-        error: function (err) { test.ok(false, 'Callback should not be executed'); }
+    test.expect(2);
+    client.execute('listVirtualMachines', {}, function (err) {
+        if (!err) return test.ok(false, 'No error raised');
+
+        test.ok(err.name == 'APIError', 'Incorrect error');
+        test.ok(err.code == 401, 'Incorrect error code');
     });
 
     http.mockResponse.emit('data', listVMsJSONResponse);
