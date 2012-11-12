@@ -111,6 +111,34 @@ var listVMsJSONResponse =
     '    }' +
     '}';
 
+var associateIpJSONRespone =
+    '{' +
+    '    "associateipaddressresponse": {' +
+    '        "id": 1, ' +
+    '        "jobid": 1 ' +
+    '    }' +
+    '}';
+
+var queryAsyncJobResult1 =
+    '{' +
+    '    "queryasyncjobresultresponse": {' +
+    '        "jobid": 247148, ' +
+    '        "jobprocstatus": 0, ' +
+    '        "jobresultcode": 0, ' +
+    '        "jobstatus": 0 ' +
+    '    }' +
+    '}';
+
+var queryAsyncJobResult2 =
+    '{' +
+    '    "queryasyncjobresultresponse": {' +
+    '        "jobid": 247148, ' +
+    '        "jobprocstatus": 0, ' +
+    '        "jobresultcode": 0, ' +
+    '        "jobstatus": 1 ' +
+    '    }' +
+    '}';
+
 exports.testSignature = function (test) {
     var client = new CSClient({secretKey : '2222' });
     var signature = client.calculateSignature({command: 'test', param: 'test-param'});
@@ -193,6 +221,30 @@ exports.testApiErrors = function (test) {
 
     test.done();
 };
+
+exports.testAsync = function (test) {
+    var http = getMockHttp(200);
+    var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
+
+    test.expect(1);
+    client.executeAsync('associateIpAddress', { zoneId: '1' }, function (err, response) {
+        test.ok(true, '');
+    });
+
+    http.mockResponse.emit('data', associateIpJSONRespone);
+    http.mockResponse.emit('end');
+
+    setTimeout(function () {
+        http.mockResponse.emit('data', queryAsyncJobResult1);
+        http.mockResponse.emit('end');
+        setTimeout(function () {
+            http.mockResponse.emit('data', queryAsyncJobResult2);
+            http.mockResponse.emit('end');
+        }, 1100);
+    }, 1100);
+
+    setTimeout(function () { test.done(); }, 3000);
+}
 
 function getMockHttp (statusCode) {
     function HttpResponse () { 
