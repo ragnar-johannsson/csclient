@@ -244,7 +244,7 @@ exports.testAsync = function (test) {
         }, 1100);
     }, 1100);
 
-    setTimeout(function () { test.done(); }, 3000);
+    setTimeout(function () { test.done(); }, 3000);
 }
 
 function getMockHttp (statusCode) {

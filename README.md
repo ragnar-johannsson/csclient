@@ -24,7 +24,7 @@ var options = {
 var client = new CloudStackClient(options);
 
 var handleError = function (err) {
-    if (err.name === 'APIError') {
+    if (err.name === 'APIError') {
         switch (err.code) {
         case 401:
             return console.log('Unauthorized.');
