@@ -25,26 +25,36 @@ var options = {
 
 var client = new CloudStackClient(options);
 
-client.execute('listVirtualMachines', {}, function (err, response) {
-    if (err) {
-        if (err.name === 'APIError') {
-            switch (err.code) {
-            case 401:
-                return console.log('Unauthorized.');
-            case 530:
-                return console.log('Parameter error: ' + err.message);
-            default:
-                return console.log('API error ' + err.code + ': ' + err.message);
-            }
-        } else {
-            return console.log('Oops, I did it again. ' + err.message);
+var handleError = function (err) {
+    if (err.name === 'APIError') {
+        switch (err.code) {
+        case 401:
+            return console.log('Unauthorized.');
+        case 530:
+            return console.log('Parameter error: ' + err.message);
+        default:
+            return console.log('API error ' + err.code + ': ' + err.message);
         }
+    } else {
+        return console.log('Oops, I did it again. ' + err.message);
     }
+}
 
-    for (var i = 0; i < response.listvirtualmachinesresponse.virtualmachine.length; i++) {
-        var vm = response.listvirtualmachinesresponse.virtualmachine[i];
+client.execute('listVirtualMachines', {}, function (err, response) {
+    if (err) return handleError(err);
+
+    response = response.listvirtualmachinesresponse;
+    for (var i = 0; i < response.virtualmachine.length; i++) {
+        var vm = response.virtualmachine[i];
         console.log(vm.name + " is in state " + vm.state);
     }
+});
+
+client.executeAsync('associateIpAddress', { zoneid: 1 }, function (err, response) {
+    if (err) return handleError(err);
+
+    response = response.associateipaddressresponse;
+    console.log('Id of IP address associated: ' + response.id);
 });
 ```
 
