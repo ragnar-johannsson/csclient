@@ -10,9 +10,7 @@ $ npm install csclient
 
 ### Usage
 
-The client has one method of note: <b>execute(cmd, params, callback)</b>, where <b><i>cmd</i></b> is a string with the actual API command and <b><i>params</i></b> is a key-value object with optional parameters. 
-
-For example:
+The client has two methods of note: <b>execute(cmd, params, callback)</b>, where <b><i>cmd</i></b> is a string with the actual API command and <b><i>params</i></b> is a key-value object with optional parameters. The other one, <b>executeAsync(cmd, params, callback)</b>, is for CloudStack's async API calls, polling until a result is received, or a timeout reached.
 
 ```javascript
 var CloudStackClient = require('csclient');
