@@ -228,7 +228,8 @@ exports.testAsync = function (test) {
 
     test.expect(1);
     client.executeAsync('associateIpAddress', { zoneId: '1' }, function (err, response) {
-        test.ok(true, '');
+        if (err) test.ok(false, err);
+        test.ok(response.associateipaddressresponse.id === 1, 'Incorrect response');
     });
 
     http.mockResponse.emit('data', associateIpJSONRespone);
