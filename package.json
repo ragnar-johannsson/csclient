@@ -1,6 +1,6 @@
 {
     "name": "csclient",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "An API client for the CloudStack",
     "keywords": [ "cloudstack", "api", "client" ],
     "author": "Ragnar B. Johannsson <ragnar@igo.is>",
