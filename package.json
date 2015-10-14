@@ -4,6 +4,9 @@
     "description": "An API client for the CloudStack",
     "keywords": [ "cloudstack", "api", "client" ],
     "author": "Ragnar B. Johannsson <ragnar@igo.is>",
+	"dependencies": {
+		"qs": "*"
+	},
     "devDependencies": {
         "nodeunit": "*"
     },
