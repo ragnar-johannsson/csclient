@@ -2,7 +2,7 @@ var events = require('events');
 var util= require('util');
 var CSClient = require('../lib/client');
 
-var listVMsJSONResponse = 
+var listVMsJSONResponse =
     '{' +
     '    "listvirtualmachinesresponse": {' +
     '        "virtualmachine": [' +
@@ -162,8 +162,12 @@ exports.testEncoding = function (test) {
 exports.testData = function(test) {
     var http = getMockHttp(200);
     var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
+	client.isoDate = function() {
+		return new Date(1986, 7, 13).toISOString().replace(/\.\d+Z/g, '+0000');
+	}
     http.get = function (options, callback) {
-        var path = '/indeed?command=listVirtualMachines&response=json&apiKey=1111&signature=bpsSS03m%2FSFtNeJAx6fufCSRNbQ%3D';
+        var path = '/indeed?command=listVirtualMachines&response=json&apiKey=1111&signatureversion=3&expires=1986-08-13T00%3A00%3A00%2B0000&signature=73JXcG9beokunM8TfmAMiCzHOYQ%3D';
+		console.log(options.path);
         test.ok(options.path === path, 'Incorrect parameter path generated');
         callback(http.mockResponse);
         return http.mockRequest;
@@ -248,9 +252,9 @@ exports.testAsync = function (test) {
 }
 
 function getMockHttp (statusCode) {
-    function HttpResponse () { 
-        this.statusCode = statusCode; 
-        this.headers = {}; 
+    function HttpResponse () {
+        this.statusCode = statusCode;
+        this.headers = {};
     }
 
     function HttpRequest () {
