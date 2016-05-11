@@ -189,6 +189,43 @@ exports.testData = function(test) {
     test.done();
 };
 
+exports.testDefaultParams = function(test) {
+    var http = getMockHttp(200);
+    var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
+    client.isoDate = function() {
+        return new Date(1986, 7, 13).toISOString().replace(/\.\d+Z/g, '+0000');
+    }
+    http.get = function (options, callback) {
+        var path = '/indeed?command=listVirtualMachines&response=json&apiKey=1111&signatureversion=3&expires=1986-08-13T00%3A00%3A00%2B0000&signature=73JXcG9beokunM8TfmAMiCzHOYQ%3D';
+        test.ok(options.path === path, 'Incorrect parameter path generated');
+        callback(http.mockResponse);
+        return http.mockRequest;
+    };
+
+    test.expect(10)
+    client.execute('listVirtualMachines', function (err, data) {
+        if (err) return test.ok(false, 'Should not be called');
+
+        test.ok(data['listvirtualmachinesresponse'] !== undefined, "Invalid response");
+        test.ok(data['listvirtualmachinesresponse']['virtualmachine'] !== undefined, "Invalid response");
+        test.ok(data['listvirtualmachinesresponse']['virtualmachine'].length === 2, "Invalid response");
+        test.ok(data['listvirtualmachinesresponse']['virtualmachine'][0].name === 'i-abcdefgh', "Invalid response");
+    });
+
+    client.execute('listVirtualMachines', null, function (err, data) {
+        if (err) return test.ok(false, 'Should not be called');
+
+        test.ok(data['listvirtualmachinesresponse'] !== undefined, "Invalid response");
+        test.ok(data['listvirtualmachinesresponse']['virtualmachine'] !== undefined, "Invalid response");
+        test.ok(data['listvirtualmachinesresponse']['virtualmachine'].length === 2, "Invalid response");
+        test.ok(data['listvirtualmachinesresponse']['virtualmachine'][0].name === 'i-abcdefgh', "Invalid response");
+    });
+
+    http.mockResponse.emit('data', listVMsJSONResponse);
+    http.mockResponse.emit('end');
+
+    test.done();
+};
 
 exports.testIncompleteData = function (test) {
     var http = getMockHttp(200);
