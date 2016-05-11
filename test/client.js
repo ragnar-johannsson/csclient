@@ -167,7 +167,6 @@ exports.testData = function(test) {
 	}
     http.get = function (options, callback) {
         var path = '/indeed?command=listVirtualMachines&response=json&apiKey=1111&signatureversion=3&expires=1986-08-13T00%3A00%3A00%2B0000&signature=73JXcG9beokunM8TfmAMiCzHOYQ%3D';
-		console.log(options.path);
         test.ok(options.path === path, 'Incorrect parameter path generated');
         callback(http.mockResponse);
         return http.mockRequest;
