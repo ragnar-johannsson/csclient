@@ -1,6 +1,6 @@
 var events = require('events');
 var util= require('util');
-var CSClient = require('../lib/client');
+var CSClient = require('../lib/cloudstack-client');
 
 var listVMsJSONResponse =
     '{' +
@@ -141,14 +141,14 @@ var queryAsyncJobResult2 =
 
 exports.testSignature = function (test) {
     var client = new CSClient({secretKey : '2222' });
-    var signature = client.calculateSignature({command: 'test', param: 'test-param'});
+    var signature = client.__calculateSignature({command: 'test', param: 'test-param'});
     test.ok(signature === 'K1u7VA0YQ729tNdGWsXuTZhnAB0=', 'Computed signature is incorrect');
     test.done();
 };
 
 exports.testEncoding = function (test) {
     var http = getMockHttp(200);
-    var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
+    var client = new CSClient({apiKey: '1111', secretKey : '2222', baseUrl: 'http://the.host/indeed?', http: http});
     http.get = function (options, callback) {
         test.ok(options.path.indexOf('+') === -1, 'Incorrect URL encoding: "+" found in path string.');
         return http.mockRequest;
@@ -161,9 +161,9 @@ exports.testEncoding = function (test) {
 
 exports.testData = function(test) {
     var http = getMockHttp(200);
-    var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
-	client.isoDate = function() {
-		return new Date(1986, 7, 13).toISOString().replace(/\.\d+Z/g, '+0000');
+    var client = new CSClient({apiKey: '1111', secretKey : '2222', baseUrl: 'http://the.host/indeed?', http: http});
+	client.__isoDate = function() {
+		return new Date('1986-08-13T00:00:00.000Z').toISOString().replace(/\.\d+Z/g, '+0000');
 	}
     http.get = function (options, callback) {
         var path = '/indeed?command=listVirtualMachines&response=json&apiKey=1111&signatureversion=3&expires=1986-08-13T00%3A00%3A00%2B0000&signature=73JXcG9beokunM8TfmAMiCzHOYQ%3D';
@@ -190,9 +190,9 @@ exports.testData = function(test) {
 
 exports.testDefaultParams = function(test) {
     var http = getMockHttp(200);
-    var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
-    client.isoDate = function() {
-        return new Date(1986, 7, 13).toISOString().replace(/\.\d+Z/g, '+0000');
+    var client = new CSClient({apiKey: '1111', secretKey : '2222', baseUrl: 'http://the.host/indeed?', http: http});
+    client.__isoDate = function() {
+        return new Date('1986-08-13T00:00:00.000Z').toISOString().replace(/\.\d+Z/g, '+0000');
     }
     http.get = function (options, callback) {
         var path = '/indeed?command=listVirtualMachines&response=json&apiKey=1111&signatureversion=3&expires=1986-08-13T00%3A00%3A00%2B0000&signature=73JXcG9beokunM8TfmAMiCzHOYQ%3D';
@@ -228,14 +228,14 @@ exports.testDefaultParams = function(test) {
 
 exports.testIncompleteData = function (test) {
     var http = getMockHttp(200);
-    var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
+    var client = new CSClient({apiKey: '1111', secretKey : '2222', baseUrl: 'http://the.host/indeed?', http: http});
 
     test.expect(2);
     client.execute('listVirtualMachines', {}, function (err) {
         if (!err) return test.ok(false, 'No error raised');
 
         test.ok(err.name == 'SyntaxError', 'Incorrect error');
-        test.ok(err.message == 'Unexpected end of input', 'Incorrect error');
+        test.ok(err.message == 'Unexpected end of JSON input', 'Incorrect error');
     });
 
     http.mockResponse.emit('data', listVMsJSONResponse.slice(0, listVMsJSONResponse.length/2));
@@ -246,7 +246,7 @@ exports.testIncompleteData = function (test) {
 
 exports.testApiErrors = function (test) {
     var http = getMockHttp(401);
-    var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
+    var client = new CSClient({apiKey: '1111', secretKey : '2222', baseUrl: 'http://the.host/indeed?', http: http});
 
     test.expect(2);
     client.execute('listVirtualMachines', {}, function (err) {
@@ -264,12 +264,12 @@ exports.testApiErrors = function (test) {
 
 exports.testAsync = function (test) {
     var http = getMockHttp(200);
-    var client = new CSClient({apiKey: '1111', secretKey : '2222', serverURL: 'http://the.host/indeed?', http: http});
+    var client = new CSClient({apiKey: '1111', secretKey : '2222', baseUrl: 'http://the.host/indeed?', http: http});
 
     test.expect(1);
     client.executeAsync('associateIpAddress', { zoneId: '1' }, function (err, response) {
         if (err) test.ok(false, err);
-        test.ok(response.associateipaddressresponse.id === 1, 'Incorrect response');
+        test.ok(response.jobstatus === 1, 'Incorrect response');
     });
 
     http.mockResponse.emit('data', associateIpJSONRespone);
