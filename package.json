@@ -2,11 +2,15 @@
     "name": "csclient",
     "version": "0.4.0",
     "description": "An API client for the CloudStack",
-    "keywords": [ "cloudstack", "api", "client" ],
+    "keywords": [
+        "cloudstack",
+        "api",
+        "client"
+    ],
     "author": "Ragnar B. Johannsson <ragnar@igo.is>",
-	"dependencies": {
-		"qs": "*"
-	},
+    "dependencies": {
+        "qs": "*"
+    },
     "devDependencies": {
         "nodeunit": "*"
     },
@@ -17,5 +21,8 @@
         "type": "git",
         "url": "git://github.com/ragnar-johannsson/csclient.git"
     },
-    "main": "./lib/client"
+    "main": "./lib/cloudstack-client",
+    "engines": {
+        "node": ">= 4.0"
+    }
 }
