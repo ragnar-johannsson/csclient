@@ -1,6 +1,6 @@
 {
   "name": "csclient",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "An API client for the CloudStack",
   "keywords": [
     "cloudstack",
@@ -17,6 +17,7 @@
   "scripts": {
     "test": "node_modules/.bin/nodeunit test"
   },
+  "license": "BSD-2-Clause",
   "repository": {
     "type": "git",
     "url": "git://github.com/ragnar-johannsson/csclient.git"
