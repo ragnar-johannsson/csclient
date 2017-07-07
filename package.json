@@ -1,6 +1,6 @@
 {
   "name": "csclient",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "An API client for the CloudStack",
   "keywords": [
     "cloudstack",
