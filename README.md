@@ -63,7 +63,7 @@ client.on ('ready', () => {
         if (err) return handleError(err);
 
         response = response.listvirtualmachinesresponse;
-        for (var i = 0; i < response.virtualmachine.length; i++) {
+        for (var i = 0; i < response.count; i++) {
             var vm = response.virtualmachine[i];
             console.log(vm.name + " is in state " + vm.state);
         }
